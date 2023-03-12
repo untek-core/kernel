@@ -2,12 +2,11 @@
 
 namespace Untek\Core\Kernel\Kernel;
 
+use LogicException;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Untek\Core\Container\Interfaces\ContainerConfiguratorInterface;
-use Untek\Core\Kernel\Kernel\KernelInterface;
-use LogicException;
 
 abstract class BaseKernel implements KernelInterface
 {
@@ -66,7 +65,7 @@ abstract class BaseKernel implements KernelInterface
         }
     }
 
-    protected function initializeShellVerbosity()
+    protected function initializeShellVerbosity(): void
     {
         if ($this->debug && !isset($_ENV['SHELL_VERBOSITY']) && !isset($_SERVER['SHELL_VERBOSITY'])) {
             putenv('SHELL_VERBOSITY=3');
