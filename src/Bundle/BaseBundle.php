@@ -12,6 +12,10 @@ abstract class BaseBundle implements BundleInterface
 
     use ContainerAttributeTrait;
 
+    public function dependecies(): array {
+        return [];
+    }
+    
     protected function isCli(): bool
     {
         return php_sapi_name() == 'cli' && $this->container->has(CommandConfiguratorInterface::class);

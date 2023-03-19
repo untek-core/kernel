@@ -12,4 +12,6 @@ interface BundleInterface
     public function boot(): void;
 
     public function setContainer(ContainerInterface $container);
+
+    public function dependecies(): array;
 }

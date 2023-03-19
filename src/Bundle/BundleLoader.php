@@ -26,17 +26,18 @@ class BundleLoader
     public function boot(array $bundlesDefinition): void
     {
         $this->initializeBundles($bundlesDefinition);
-        $this->bootBundles();
+        $this->bootBundles($this->bundles);
     }
 
-    protected function bootBundles(): void
+    protected function bootBundles(array $bundles): void
     {
-        foreach ($this->bundles as $bundle) {
+        foreach ($bundles as $bundle) {
+            /** @var BundleInterface $bundle */
             $bundle->setContainer($this->container);
             $bundle->boot();
         }
     }
-
+    
     /**
      * Initializes bundles.
      *
@@ -62,6 +63,13 @@ class BundleLoader
                     )
                 );
             }
+
+            $dependecies = $bundle->dependecies();
+            if($dependecies) {
+                throw new LogicException('Bundle depedencies disabled!');
+                $this->initializeBundles($dependecies);
+            }
+            
             $this->bundles[$name] = $bundle;
         }
     }
