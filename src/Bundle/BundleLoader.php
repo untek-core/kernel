@@ -37,7 +37,7 @@ class BundleLoader
             $bundle->boot();
         }
     }
-    
+
     /**
      * Initializes bundles.
      *
@@ -65,21 +65,29 @@ class BundleLoader
             }
 
             $dependecies = $bundle->dependecies();
-            if($dependecies) {
+            if ($dependecies) {
                 throw new LogicException('Bundle depedencies disabled!');
                 $this->initializeBundles($dependecies);
             }
-            
+
             $this->bundles[$name] = $bundle;
         }
     }
 
     protected function registerBundles(array $bundlesDefinition): iterable
     {
-        foreach ($bundlesDefinition as $class => $envs) {
-            if ($envs[$this->environment] ?? $envs['all'] ?? false) {
+        foreach ($bundlesDefinition as $class => $options) {
+            if ($this->isAllowBundle($options)) {
                 yield new $class();
             }
         }
+    }
+    
+    protected function isAllowBundle(array $options): bool
+    {
+        $envs = $options;
+        $isAllowEnv = $envs[$this->environment] ?? $envs['all'] ?? false;
+        $isAllowContext = true;
+        return $isAllowEnv && $isAllowContext;
     }
 }
