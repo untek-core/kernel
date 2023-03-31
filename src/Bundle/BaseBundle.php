@@ -2,6 +2,9 @@
 
 namespace Untek\Core\Kernel\Bundle;
 
+use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 use Untek\Core\Container\Interfaces\ContainerConfiguratorInterface;
 use Untek\Core\Container\Traits\ContainerAttributeTrait;
 use Untek\Core\Instance\Libs\Resolvers\ArgumentMetadataResolver;
@@ -33,6 +36,14 @@ abstract class BaseBundle implements BundleInterface
     protected function getContainerConfigurator(): ContainerConfiguratorInterface
     {
         return $this->container->get(ContainerConfiguratorInterface::class);
+    }
+
+    protected function configureContainerServices(string $configFile): void
+    {
+        $containerBuilder = $this->container->get(ContainerBuilder::class);
+        $fileLocator = new FileLocator(__DIR__);
+        $loader = new PhpFileLoader($containerBuilder, $fileLocator);
+        $loader->load($configFile);
     }
 
     protected function configureFromPhpFile(string $fileName, array $availableArguments = []): void
