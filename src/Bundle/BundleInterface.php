@@ -3,6 +3,7 @@
 namespace Untek\Core\Kernel\Bundle;
 
 use Psr\Container\ContainerInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 interface BundleInterface
 {
@@ -13,5 +14,5 @@ interface BundleInterface
 
     public function setContainer(ContainerInterface $container);
 
-    public function dependecies(): array;
+    public function build(ContainerBuilder $containerBuilder);
 }

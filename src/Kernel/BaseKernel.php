@@ -3,16 +3,14 @@
 namespace Untek\Core\Kernel\Kernel;
 
 use LogicException;
-use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
-use Psr\Container\NotFoundExceptionInterface;
-use Untek\Core\Container\Interfaces\ContainerConfiguratorInterface;
 
 abstract class BaseKernel implements KernelInterface
 {
-
     private ContainerInterface $container;
+
     protected bool $debug = false;
+
     protected float $startTime;
 
     /**
@@ -25,18 +23,6 @@ abstract class BaseKernel implements KernelInterface
             throw new LogicException('Cannot retrieve the container from a non-booted kernel.');
         }
         return $this->container;
-    }
-
-    /**
-     * @return ContainerConfiguratorInterface
-     * @throws NotFoundExceptionInterface
-     * @throws ContainerExceptionInterface
-     */
-    public function getContainerConfigurator(): ContainerConfiguratorInterface
-    {
-        return $this
-            ->getContainer()
-            ->get(ContainerConfiguratorInterface::class);
     }
 
     protected function setContainer(ContainerInterface $container): void

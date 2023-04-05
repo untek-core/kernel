@@ -4,36 +4,55 @@ namespace Untek\Core\Kernel\Bundle;
 
 use LogicException;
 use Psr\Container\ContainerInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class BundleLoader
 {
-
     /** @var array | BundleInterface[] */
     protected array $bundles = [];
+    
+    protected array $bundlesDefinition = [];
+
     private string $context;
+
     protected string $environment;
 
-    public function __construct(private ContainerInterface $container, string $environment, string $context)
+    public function __construct(string $environment, string $context, array $bundlesDefinition)
     {
         $this->environment = $environment;
         $this->context = $context;
+        $this->bundlesDefinition = $bundlesDefinition;
     }
 
     /**
      * @param array $bundlesDefinition
      * @throws LogicException if two bundles share a common name
      */
-    public function boot(array $bundlesDefinition): void
+    public function boot(ContainerInterface $container): void
     {
-        $this->initializeBundles($bundlesDefinition);
-        $this->bootBundles($this->bundles);
+        $this->initializeBundles();
+        $this->bootBundles($this->bundles, $container);
     }
 
-    protected function bootBundles(array $bundles): void
+    public function buildContainer(ContainerBuilder $containerBuilder): void
+    {
+        $this->initializeBundles();
+        foreach ($this->bundles as $bundle) {
+            /** @var BundleInterface $bundle */
+            /*if($this->container) {
+                $bundle->setContainer($this->container);
+            }*/
+            $bundle->build($containerBuilder);
+        }
+    }
+    
+    protected function bootBundles(array $bundles, ContainerInterface $container): void
     {
         foreach ($bundles as $bundle) {
             /** @var BundleInterface $bundle */
-            $bundle->setContainer($this->container);
+            if($container) {
+                $bundle->setContainer($container);
+            }
             $bundle->boot();
         }
     }
@@ -45,45 +64,36 @@ class BundleLoader
      * @throws LogicException if two bundles share a common name
      *
      */
-    protected function initializeBundles(array $bundlesDefinition)
+    protected function initializeBundles() :void
     {
+        if(!empty($this->bundles)) {
+            return;
+        }
         $this->bundles = [];
-        foreach ($this->registerBundles($bundlesDefinition) as $bundle) {
-            /** @var BundleInterface $bundle */
-            $name = $bundle->getName();
-            if (isset($this->bundles[$name])) {
-                throw new LogicException(sprintf('Trying to register two bundles with the same name "%s".', $name));
+        foreach ($this->bundlesDefinition as $class => $options) {
+            if ($this->isAllowBundle($class, $options)) {
+                /** @var BundleInterface $bundle */
+                $bundle = $this->createBundleInstance($class, $options);
+                $name = $bundle->getName();
+                $this->checkBundleForDefined($name);
+                $this->bundles[$name] = $bundle;
             }
-            if (!$bundle instanceof BundleInterface) {
-                throw new LogicException(
-                    sprintf(
-                        'The "%s" bundle class must implement the "%s" interface.',
-                        get_class($bundle),
-                        BundleInterface::class
-                    )
-                );
-            }
-
-            $dependecies = $bundle->dependecies();
-            if ($dependecies) {
-                throw new LogicException('Bundle depedencies disabled!');
-                $this->initializeBundles($dependecies);
-            }
-
-            $this->bundles[$name] = $bundle;
         }
     }
 
-    protected function registerBundles(array $bundlesDefinition): iterable
+    protected function checkBundleForDefined(string $name)
     {
-        foreach ($bundlesDefinition as $class => $options) {
-            if ($this->isAllowBundle($options)) {
-                yield new $class();
-            }
+        if (isset($this->bundles[$name])) {
+            throw new LogicException(sprintf('Trying to register two bundles with the same name "%s".', $name));
         }
     }
-    
-    protected function isAllowBundle(array $options): bool
+
+    protected function createBundleInstance(string $class, array $options): BundleInterface
+    {
+        return new $class();
+    }
+
+    protected function isAllowBundle(string $class, array $options): bool
     {
         $envs = $options;
         $isAllowEnv = $envs[$this->environment] ?? $envs['all'] ?? false;

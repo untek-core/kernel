@@ -15,10 +15,16 @@ abstract class BaseBundle implements BundleInterface
 
     use ContainerAttributeTrait;
 
-    public function dependecies(): array {
-        return [];
+    public function build(ContainerBuilder $containerBuilder) {
+        
     }
-    
+
+    protected function load(ContainerBuilder $containerBuilder, mixed $resource) {
+        $fileLocator = new FileLocator(__DIR__);
+        $loader = new PhpFileLoader($containerBuilder, $fileLocator);
+        $loader->load($resource);
+    }
+
     protected function isCli(): bool
     {
         return php_sapi_name() == 'cli' && $this->container->has(CommandConfiguratorInterface::class);
@@ -38,13 +44,13 @@ abstract class BaseBundle implements BundleInterface
         return $this->container->get(ContainerConfiguratorInterface::class);
     }
 
-    protected function configureContainerServices(string $configFile): void
+    /*protected function configureContainerServices(string $configFile): void
     {
         $containerBuilder = $this->container->get(ContainerBuilder::class);
         $fileLocator = new FileLocator(__DIR__);
         $loader = new PhpFileLoader($containerBuilder, $fileLocator);
         $loader->load($configFile);
-    }
+    }*/
 
     protected function configureFromPhpFile(string $fileName, array $availableArguments = []): void
     {
