@@ -24,33 +24,12 @@ class BundleLoader
         $this->bundlesDefinition = $bundlesDefinition;
     }
 
-    /**
-     * @param array $bundlesDefinition
-     * @throws LogicException if two bundles share a common name
-     */
-    public function boot(ContainerInterface $container): void
-    {
-        $this->initializeBundles();
-        $this->bootBundles($this->bundles, $container);
-    }
-
     public function buildContainer(ContainerBuilder $containerBuilder): void
     {
         $this->initializeBundles();
         foreach ($this->bundles as $bundle) {
             /** @var BundleInterface $bundle */
             $bundle->build($containerBuilder);
-        }
-    }
-    
-    protected function bootBundles(array $bundles, ContainerInterface $container): void
-    {
-        foreach ($bundles as $bundle) {
-            /** @var BundleInterface $bundle */
-            if($container) {
-                $bundle->setContainer($container);
-            }
-            $bundle->boot();
         }
     }
 
