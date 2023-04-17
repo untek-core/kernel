@@ -39,9 +39,6 @@ class BundleLoader
         $this->initializeBundles();
         foreach ($this->bundles as $bundle) {
             /** @var BundleInterface $bundle */
-            /*if($this->container) {
-                $bundle->setContainer($this->container);
-            }*/
             $bundle->build($containerBuilder);
         }
     }
