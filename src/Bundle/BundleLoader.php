@@ -5,6 +5,7 @@ namespace Untek\Core\Kernel\Bundle;
 use LogicException;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class BundleLoader
 {
@@ -32,6 +33,26 @@ class BundleLoader
             $bundle->build($containerBuilder);
         }
     }
+
+    public function boot(ContainerInterface $container): void {
+        $this->initializeBundles();
+        foreach ($this->bundles as $bundle) {
+            /** @var BundleInterface $bundle */
+            if(method_exists($bundle, 'boot')) {
+                $bundle->boot($container);
+            }
+        }
+    }
+
+//    public function registerEvents(EventDispatcherInterface $eventDispatcher, ContainerInterface $container): void {
+//        $this->initializeBundles();
+//        foreach ($this->bundles as $bundle) {
+//            /** @var BundleInterface $bundle */
+//            if(method_exists($bundle, 'registerEvents')) {
+//                $bundle->registerEvents($eventDispatcher, $container);
+//            }
+//        }
+//    }
 
     /**
      * Initializes bundles.
