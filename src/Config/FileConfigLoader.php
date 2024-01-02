@@ -16,6 +16,8 @@ class FileConfigLoader
     public function boot(string $file, array $availableArguments = []): void
     {
         $configuratorCallback = @include $file;
-        $this->callableConfigLoader->boot($configuratorCallback, $availableArguments);
+        if($configuratorCallback) {
+            $this->callableConfigLoader->boot($configuratorCallback, $availableArguments);
+        }
     }
 }
