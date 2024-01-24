@@ -11,4 +11,6 @@ interface KernelInterface
     public function boot(): void;
 
     public function getContainer(): ContainerInterface;
+
+    public function terminate(): void;
 }

@@ -2,8 +2,11 @@
 
 namespace Untek\Core\Kernel\Kernel;
 
+use Forecast\Map\Modules\Mq\Infrastructure\Enums\EventEnum;
 use LogicException;
 use Psr\Container\ContainerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Untek\Core\Kernel\Events\KernelTerminatedEvent;
 
 abstract class BaseKernel implements KernelInterface
 {
@@ -23,6 +26,24 @@ abstract class BaseKernel implements KernelInterface
             throw new LogicException('Cannot retrieve the container from a non-booted kernel.');
         }
         return $this->container;
+    }
+
+    public function terminate(): void
+    {
+        $dispatcher = $this->getEventDispatcher();
+        if ($dispatcher) {
+            $dispatcher->dispatch(new KernelTerminatedEvent(), EventEnum::KERNEL_TERMINATED);
+        }
+    }
+
+    protected function getEventDispatcher(): ?EventDispatcherInterface
+    {
+        if ($this->getContainer()->has(EventDispatcherInterface::class)) {
+            /** @var EventDispatcherInterface $dispatcher */
+            $dispatcher = $this->getContainer()->get(EventDispatcherInterface::class);
+            return $dispatcher;
+        }
+        return null;
     }
 
     protected function setContainer(ContainerInterface $container): void
