@@ -2,10 +2,10 @@
 
 namespace Untek\Core\Kernel\Kernel;
 
-use Forecast\Map\Modules\Mq\Infrastructure\Enums\EventEnum;
 use LogicException;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Untek\Core\Kernel\Enums\EventEnum;
 use Untek\Core\Kernel\Events\KernelTerminatedEvent;
 
 abstract class BaseKernel implements KernelInterface
