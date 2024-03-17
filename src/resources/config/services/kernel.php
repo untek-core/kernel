@@ -17,5 +17,6 @@ return static function (ContainerConfigurator $configurator): void {
                 service(ArgumentMetadataResolver::class),
                 service(CallableConfigLoader::class),
             ]
-        );
+        )
+        ->public();
 };
