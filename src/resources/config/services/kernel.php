@@ -8,7 +8,7 @@ use Untek\Core\Kernel\Config\FileConfigLoader;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 
 return static function (ContainerConfigurator $configurator): void {
-    $services = $configurator->services();
+    $services = $configurator->services()->defaults()->public();
     $parameters = $configurator->parameters();
 
     $services->set(FileConfigLoader::class, FileConfigLoader::class)
