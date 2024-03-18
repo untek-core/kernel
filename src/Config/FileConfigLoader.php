@@ -2,7 +2,10 @@
 
 namespace Untek\Core\Kernel\Config;
 
+use Untek\Core\Code\Helpers\DeprecateHelper;
 use Untek\Core\Instance\Libs\Resolvers\ArgumentMetadataResolver;
+
+DeprecateHelper::hardThrow();
 
 class FileConfigLoader
 {
