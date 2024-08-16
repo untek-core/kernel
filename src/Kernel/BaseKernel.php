@@ -8,6 +8,8 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Untek\Core\Kernel\Enums\EventEnum;
 use Untek\Core\Kernel\Events\KernelTerminatedEvent;
 
+\Untek\Core\Code\Helpers\DeprecateHelper::hardThrow();
+
 abstract class BaseKernel implements KernelInterface
 {
     private ContainerInterface $container;

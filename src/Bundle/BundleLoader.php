@@ -7,6 +7,8 @@ use Psr\Container\ContainerInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
+\Untek\Core\Code\Helpers\DeprecateHelper::hardThrow();
+
 class BundleLoader
 {
     /** @var array | BundleInterface[] */

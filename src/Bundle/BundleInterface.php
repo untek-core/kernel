@@ -5,6 +5,8 @@ namespace Untek\Core\Kernel\Bundle;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
+\Untek\Core\Code\Helpers\DeprecateHelper::hardThrow();
+
 interface BundleInterface
 {
     public function getName(): string;

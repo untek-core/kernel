@@ -8,6 +8,8 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 use Untek\Core\Instance\Libs\Resolvers\ArgumentMetadataResolver;
 
+\Untek\Core\Code\Helpers\DeprecateHelper::hardThrow();
+
 abstract class BaseBundle implements BundleInterface
 {
     public function build(ContainerBuilder $containerBuilder)

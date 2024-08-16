@@ -4,6 +4,8 @@ namespace Untek\Core\Kernel\Config;
 
 use Untek\Core\Instance\Libs\Resolvers\ArgumentMetadataResolver;
 
+\Untek\Core\Code\Helpers\DeprecateHelper::hardThrow();
+
 class CallableConfigLoader
 {
 

@@ -2,6 +2,8 @@
 
 namespace Untek\Core\Kernel\Enums;
 
+\Untek\Core\Code\Helpers\DeprecateHelper::hardThrow();
+
 class EventEnum
 {
 
